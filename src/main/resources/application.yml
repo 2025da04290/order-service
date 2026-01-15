@@ -5,6 +5,30 @@ spring:
   application:
     name: order-service
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
 eureka:
   client:
     service-url:
@@ -32,12 +56,16 @@ springdoc:
 logging:
   level:
     com.vk.orderservice: DEBUG
+    org.hibernate.SQL: DEBUG
 
 ---
 spring:
   config:
     activate:
       on-profile: docker
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/order_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 
 eureka:
   client:
@@ -50,6 +78,10 @@ spring:
     activate:
       on-profile: prod
 
+  jpa:
+    show-sql: false
+
 logging:
   level:
     com.vk.orderservice: INFO
+    org.hibernate.SQL: WARN
